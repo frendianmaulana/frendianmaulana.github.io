@@ -140,21 +140,29 @@
       </div>
       <div class="row justify-content-center">
         <div class="col-md-6" data-aos-offset="600">
-          <form action="#" method="post">
+          <div class="alert alert-success alert-dismissible fade show d-none my-alert" role="alert">
+            <strong>Terima kasih!</strong> Pesan anda sudah kami terima
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          <form action="#" method="post" name="contact-me-form">
             <div class="mb-3" data-aos="fade-left" data-aos-anchor-placement="top-center">
               <label for="name" class="form-label">Nama</label>
-              <input type="text" class="form-control" id="name" aria-describedby="name">
+              <input type="text" class="form-control" id="name" aria-describedby="name" name="nama">
             </div>
             <div class="mb-3" data-aos="fade-right" data-aos-anchor-placement="top-center">
               <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" aria-describedby="email">
+              <input type="email" class="form-control" id="email" aria-describedby="email" name="email">
             </div>
             <div class="mb-3" data-aos="zoom-out" data-aos-anchor-placement="top-center">
               <label for="pesan" class="form-label">Pesan Moral</label>
-              <textarea class="form-control" id="pesan" rows="4"></textarea>
+              <textarea class="form-control" id="pesan" rows="4" name="pesan"></textarea>
             </div>
             <div class="btn" data-aos="fade-up" data-aos-offset="100">
-              <button type="submit" class="btn btn-primary">Kirim</button>
+              <button type="submit" class="btn btn-primary btn-kirim">Kirim</button>
+              <button class="btn btn-primary btn-loading d-none" type="button" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Loading...
+              </button>
             </div>
           </form>
         </div>
@@ -186,6 +194,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script>
       gsap.form('.jumbotron img', {duration : 1, x : -100, opacity : 0});
+    </script>
+
+    <script>
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbxq4rp-phvR0qfkwsiUYiAo2zFz0bLwBrafe0llI_amBbyfHuT0j0fAvK_rhUZW7gNgTg/exec'
+      const form = document.forms['contact-me-form'];
+      const btnKirim = document.querySelector('.btn-kirim');
+      const btnLoading = document.querySelector('.btn-loading');
+      const myAlert = document.querySelector('.my-alert');
+    
+      form.addEventListener('submit', e => {
+        e.preventDefault()
+        btnLoading.classList.toggle('d-none');
+        btnKirim.classList.toggle('d-none');
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+          .then(response => {
+            // tampilakan tombol kirim, hilangkan tombol loading
+            btnLoading.classList.toggle('d-none');
+            btnKirim.classList.toggle('d-none');
+            // tampilkan alert
+            myAlert.classList.toggle('d-none');
+            // reset form
+            form.reset();
+            console.log('Success!', response)
+          })
+          .catch(error => console.error('Error!', error.message))
+      })
     </script>
 </body>
 
